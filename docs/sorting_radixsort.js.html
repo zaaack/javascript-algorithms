@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sorting/radixsort.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sorting/radixsort.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>(function (exports) {
+  'use strict';
+
+  var radixSort = (function () {
+
+    /**
+     * Returns the digit of a number that is 'lsdOffset'
+     * places from the least significant digit.
+     *
+     * @private
+     * @param {Number} number Number
+     * @param {Number} lsdOffset Offset of the digit to return, counting
+     * from the position of the least significant digit (e.g. lsdOffset = 0
+     * will return the least significant digit itself)
+     * @return {String} digit The specified number digit. Returns 'undefined'
+     * if lsdOffset is bigger or equal to the number of digits of the 'number'
+     * argument.
+     */
+    var getDigit = function (number, lsdOffset) {
+      var size = number.toString().length;
+      var digit;
+
+      if (lsdOffset >= 0 &amp;&amp; lsdOffset &lt; size) {
+        digit = number.toString()[size - 1 - lsdOffset];
+      }
+
+      return digit;
+    };
+
+    /**
+     * Least significant digit (LSD) Radix sort. A non-comparative,
+     * stable integer sorting algorithm.&lt;br>&lt;br>
+     * Worst-case time complexity is O(N K) for N keys with K being
+     * the average key length, measured in number of digits.
+     *
+     * @example
+     * var sort = require('path-to-algorithms/src/' +
+     * 'sorting/radixsort').radixSort;
+     * console.log(sort([2, 5, 1, 3, 4])); // [ 1, 2, 3, 4, 5 ]
+     *
+     * @public
+     * @module sorting/radixsort
+     * @param {Array} array Input integer array
+     * @return {Array} Sorted array
+     */
+    return function (array) {
+      var size = array.length;
+      var R = 10;   /* Alphabet size ([0-9] for integers) */
+      var count;
+      var digit;
+      var i;
+      var j;
+
+      /* Find maximum key size */
+      var maxKeySize = (array[0] || '').toString().length;
+      for (i = 1; i &lt; size; i += 1) {
+        var numStr = array[i].toString();
+        if (numStr.length > maxKeySize) {
+          maxKeySize = numStr.length;
+        }
+      }
+
+      for (i = 0; i &lt; maxKeySize; i += 1) {
+        /* Initialize count */
+        count = [];
+        for (j = 0; j &lt; R; j += 1) {
+          count[j] = 0;
+        }
+
+        /* Count frequency of each array element */
+        for (j = 0; j &lt; size; j += 1) {
+          digit = getDigit(array[j], i) || 0;
+          count[digit] += 1;
+        }
+
+        /* Compute cumulates */
+        for (j = 1; j &lt; R; j += 1) {
+          count[j] += count[j - 1];
+        }
+
+        /* Move elements to auxiliary array */
+        var aux = [];
+        for (j = size - 1; j >= 0; j -= 1) {
+          digit = getDigit(array[j], i) || 0;
+          count[digit] -= 1;
+          aux[count[digit]] = array[j];
+        }
+
+        /* Copy elements back from auxilary array */
+        for (j = 0; j &lt; size; j += 1) {
+          array[j] = aux[j];
+        }
+      }
+      return array;
+    };
+  })();
+
+  exports.radixSort = radixSort;
+
+})(typeof window === 'undefined' ? module.exports : window);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-combinatorics_cartesianproduct.html">combinatorics/cartesianproduct</a></li><li><a href="module-combinatorics_combinations.html">combinatorics/combinations</a></li><li><a href="module-combinatorics_permutations.html">combinatorics/permutations</a></li><li><a href="module-combinatorics_variations-repetition.html">combinatorics/variations-repetition</a></li><li><a href="module-data-structures_avl-tree.html">data-structures/avl-tree</a></li><li><a href="module-data-structures_binary-search-tree.html">data-structures/binary-search-tree</a></li><li><a href="module-data-structures_edge.html">data-structures/edge</a></li><li><a href="module-data-structures_hash-table.html">data-structures/hash-table</a></li><li><a href="module-data-structures_heap.html">data-structures/heap</a></li><li><a href="module-data-structures_interval-tree.html">data-structures/interval-tree</a></li><li><a href="module-data-structures_linked-list.html">data-structures/linked-list</a></li><li><a href="module-data-structures_red-black-tree.html">data-structures/red-black-tree</a></li><li><a href="module-data-structures_size-balanced-tree.html">data-structures/size-balanced-tree</a></li><li><a href="module-data-structures_splay-tree.html">data-structures/splay-tree</a></li><li><a href="module-data-structures_vertex.html">data-structures/vertex</a></li><li><a href="module-graphs_others_tarjan-connected-components.html">graphs/others/tarjan-connected-components</a></li><li><a href="module-graphs_others_topological-sort.html">graphs/others/topological-sort</a></li><li><a href="module-graphs_searching_bfs.html">graphs/searching/bfs</a></li><li><a href="module-graphs_searching_dfs.html">graphs/searching/dfs</a></li><li><a href="module-graphs_shortest-path_bellman-ford.html">graphs/shortest-path/bellman-ford</a></li><li><a href="module-graphs_shortest-path_dijkstra.html">graphs/shortest-path/dijkstra</a></li><li><a href="module-graphs_shortest-path_floyd-warshall.html">graphs/shortest-path/floyd-warshall</a></li><li><a href="module-graphs_spanning-trees_prim.html">graphs/spanning-trees/prim</a></li><li><a href="module-others_fibonacci.html">others/fibonacci</a></li><li><a href="module-others_hanoi.html">others/hanoi</a></li><li><a href="module-others_levenshtein-distance.html">others/levenshtein-distance</a></li><li><a href="module-others_minCoinsChange.html">others/minCoinsChange</a></li><li><a href="module-primes_is-prime.html">primes/is-prime</a></li><li><a href="module-primes_prime-factor-tree.html">primes/prime-factor-tree</a></li><li><a href="module-primes_sieve-of-eratosthenes.html">primes/sieve-of-eratosthenes</a></li><li><a href="module-searching_binarysearch.html">searching/binarysearch</a></li><li><a href="module-searching_knuth-morris-pratt.html">searching/knuth-morris-pratt</a></li><li><a href="module-searching_longest-increasing-subsequence.html">searching/longest-increasing-subsequence</a></li><li><a href="module-searching_maximum-subarray.html">searching/maximum-subarray</a></li><li><a href="module-searching_maximum-subarray-divide-and-conquer.html">searching/maximum-subarray-divide-and-conquer</a></li><li><a href="module-searching_quickselect.html">searching/quickselect</a></li><li><a href="module-searching_recursive-binarysearch.html">searching/recursive-binarysearch</a></li><li><a href="module-sets_quickfind.html">sets/quickfind</a></li><li><a href="module-sets_quickunion.html">sets/quickunion</a></li><li><a href="module-sets_weightquickunion.html">sets/weightquickunion</a></li><li><a href="module-shuffle_fisheryates.html">shuffle/fisheryates</a></li><li><a href="module-shuffle_richarddurstenfeld.html">shuffle/richarddurstenfeld</a></li><li><a href="module-sorting_3-way-string-quicksort.html">sorting/3-way-string-quicksort</a></li><li><a href="module-sorting_bubblesort.html">sorting/bubblesort</a></li><li><a href="module-sorting_bucketsort.html">sorting/bucketsort</a></li><li><a href="module-sorting_countingsort.html">sorting/countingsort</a></li><li><a href="module-sorting_heapsort.html">sorting/heapsort</a></li><li><a href="module-sorting_insertion-binary-sort.html">sorting/insertion-binary-sort</a></li><li><a href="module-sorting_insertionsort.html">sorting/insertionsort</a></li><li><a href="module-sorting_lsd.html">sorting/lsd</a></li><li><a href="module-sorting_mergesort.html">sorting/mergesort</a></li><li><a href="module-sorting_mergesort_merge.html">sorting/mergesort/merge</a></li><li><a href="module-sorting_msd.html">sorting/msd</a></li><li><a href="module-sorting_oddeven-sort.html">sorting/oddeven-sort</a></li><li><a href="module-sorting_quicksort-middle.html">sorting/quicksort-middle</a></li><li><a href="module-sorting_radixsort.html">sorting/radixsort</a></li><li><a href="module-sorting_recursive-insertionsort.html">sorting/recursive-insertionsort</a></li><li><a href="module-sorting_selectionsort.html">sorting/selectionsort</a></li><li><a href="module-sorting_shellsort.html">sorting/shellsort</a></li></ul><h3>Classes</h3><ul><li><a href="module-data-structures_avl-tree.AVLTree.html">AVLTree</a></li><li><a href="module-data-structures_avl-tree.Node.html">Node</a></li><li><a href="module-data-structures_binary-search-tree.BinaryTree.html">BinaryTree</a></li><li><a href="module-data-structures_binary-search-tree.Node.html">Node</a></li><li><a href="module-data-structures_hash-table.Hashtable.html">Hashtable</a></li><li><a href="module-data-structures_hash-table.Node.html">Node</a></li><li><a href="module-data-structures_heap.Heap.html">Heap</a></li><li><a href="module-data-structures_interval-tree.IntervalTree.html">IntervalTree</a></li><li><a href="module-data-structures_interval-tree.Node.html">Node</a></li><li><a href="module-data-structures_linked-list.LinkedList.html">LinkedList</a></li><li><a href="module-data-structures_linked-list.Node.html">Node</a></li><li><a href="module-data-structures_red-black-tree.RBTree.html">RBTree</a></li><li><a href="module-data-structures_size-balanced-tree-CreateSBTreeClass-SBTree.html">SBTree</a></li><li><a href="module-data-structures_splay-tree.Node.html">Node</a></li><li><a href="module-data-structures_splay-tree.SplayTree.html">SplayTree</a></li><li><a href="module-graphs_spanning-trees_prim.Graph.html">Graph</a></li><li><a href="module-sets_quickfind.QuickFind.html">QuickFind</a></li><li><a href="module-sets_quickunion.QuickUnion.html">QuickUnion</a></li><li><a href="module-sets_weightquickunion.QuickUnion.html">QuickUnion</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Mon Aug 08 2016 00:25:38 GMT+0300 (EEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
